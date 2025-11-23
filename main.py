@@ -3,6 +3,8 @@ import sqlite3
 from PyQt6.QtWidgets import (QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QStatusBar, QPushButton)
 from PyQt6.QtGui import QAction
 from classes.Insert import Insert
+from classes.Edit import EditOption
+from classes.Delete import DeleteOption
 
 
 class MainWindow(QMainWindow):
@@ -34,6 +36,10 @@ class MainWindow(QMainWindow):
         self.table.cellClicked.connect(self.cell_clicked)    
 
     def cell_clicked(self):
+        children = self.status_bar.findChildren(QPushButton) 
+        if children:
+            for child in children:
+                self.status_bar.removeWidget(child)
         self.edit_button = QPushButton("Edit Records")
         self.edit_button.clicked.connect(self.Edit)
         self.delete_button = QPushButton("Delete Records")
@@ -48,10 +54,23 @@ class MainWindow(QMainWindow):
         main_window.load_data()
 
     def Edit(self):
-        pass
+        index = self.table.currentRow()
+        student_id = self.table.item(index, 0).text()
+        student_name = self.table.item(index, 1).text()
+        student_course = self.table.item(index, 2).text()
+        student_mobile = self.table.item(index, 3).text()
+        print(f"student details - {student_id} - {student_name} - {student_course} - {student_mobile}")
+        edit = EditOption(student_id, student_name, student_course, student_mobile)
+        edit.exec()
+        main_window.load_data()
+
 
     def Delete(self):
-        pass
+        index = self.table.currentRow()
+        student_id = self.table.item(index, 0).text()
+        delete_student = DeleteOption(student_id)
+        delete_student.exec()
+        main_window.load_data()
 
     def about_us(self):
         pass    
